@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "candidate_id": "chenyu_demo",
+  "basics": { "name": "示例候选人", "target_roles": ["Java 后端开发工程师"] },
+  "projects": [
+    {
+      "id": "order_platform",
+      "name": "订单平台",
+      "role": "后端开发实习生",
+      "period": { "start": "2026-01", "end": "2026-06" },
+      "context": "面向内部运营的订单查询与处理系统。",
+      "technologies": ["Java", "Spring Boot", "Redis", "MySQL"],
+      "responsibilities": ["实现订单查询接口", "参与热点数据缓存改造"],
+      "outcomes": ["减少重复数据库查询"]
+    }
+  ],
+  "skills": [
+    { "name": "Java", "proficiency": "working", "evidence_project_ids": ["order_platform"] },
+    { "name": "Redis", "proficiency": "working", "evidence_project_ids": ["order_platform"] }
+  ],
+  "source_files": ["raw-resume.md"]
+}
