@@ -1,6 +1,27 @@
 # AI Career Toolkit
 
-一套用于自动化求职全链路的 AI Agent Skills，遵循 [agentskills.io](https://agentskills.io/specification) 规范。
+一套用于自动化求职全链路的 AI Agent Skills，遵循 [agentskills.io](https://agentskills.io/specification) 规范。它以可追踪的 Career Workspace 为核心：简历增强、岗位定制、投递记录与面试训练共享同一套数据。
+
+## 当前架构
+
+Phase 0 + Phase 1 已建立共享契约；现有四个 Skill 仍保持兼容。后续阶段会按此契约逐个接入。
+
+```mermaid
+flowchart TD
+  P[Candidate Profile] --> B[resume-builder]
+  B --> C[Enhancement Claims]
+  C --> I[interview-griller]
+  J[Job Records] --> A[Applications]
+  C --> A
+  A --> I
+  B --> R[Markdown resume]
+  R --> U[resume-publisher]
+```
+
+- [Current state baseline](CURRENT_STATE.md)
+- [Architecture decisions](docs/decisions.md)
+- [Shared schemas](schemas/README.md)
+- [Runnable example workspace](examples/workspace/)
 
 ## Skills
 
@@ -18,7 +39,7 @@
 将 skill 目录复制到你的 agent skills 目录：
 
 ```bash
-git clone https://github.com/June-PJ/ai-career-toolkit.git
+git clone https://github.com/yu20120707/ai-career-toolkit.git
 cp -r ai-career-toolkit/resume-builder <your-agent-skills-dir>/
 cp -r ai-career-toolkit/resume-publisher <your-agent-skills-dir>/
 cp -r ai-career-toolkit/interview-griller <your-agent-skills-dir>/
