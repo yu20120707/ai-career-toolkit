@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0", "workflow": "job-to-interview", "cases": [
+    {"id": "backend-application-lifecycle", "assertions": ["job record passes hard filter before tailoring", "tailored resume references only active claim IDs", "publisher renders the structured model without new claims", "application locks submitted artifact", "interview plan drills selected high-risk claims", "feedback weak point is available to next tailor"]}
+  ]
+}

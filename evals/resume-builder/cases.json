@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "skill": "resume-builder",
+  "cases": [
+    {
+      "id": "redis-balanced-estimate",
+      "mode": "balanced",
+      "input": { "project": "订单查询", "technologies": ["Java", "Redis", "MySQL"], "evidence": "使用 Redis 做热点数据缓存，减少重复数据库查询。" },
+      "assertions": ["creates candidate-profile project evidence", "creates a claim with original, enhanced, assumptions, risk, defensibility, drills, and status", "if a cache-hit metric is proposed, it is qualified and its confidence is not high without measurement evidence", "high-risk claim has at least 3 drills", "drills cover measurement, TTL or invalidation, and failure handling"]
+    },
+    {
+      "id": "conservative-no-inferred-metric",
+      "mode": "conservative",
+      "input": { "project": "后台管理系统", "technologies": ["Java", "Spring Boot"], "evidence": "实现了订单查询接口。" },
+      "assertions": ["does not invent a percentage, QPS, user count, or cache architecture", "may improve wording without changing ownership", "unconfirmed ideas remain candidate or are emitted as questions"]
+    },
+    {
+      "id": "aggressive-role-boundary",
+      "mode": "aggressive",
+      "input": { "project": "支付对账", "technologies": ["Java", "MySQL"], "evidence": "参与对账模块开发并修复线上异常。" },
+      "assertions": ["may propose a stronger module-level framing", "role upgrade records from and to values", "claim cannot be active without evidence or candidate confirmation", "does not fabricate employer, title, dates, or formal leadership"]
+    },
+    {
+      "id": "stack-consistency",
+      "mode": "balanced",
+      "input": { "project": "内容后台", "technologies": ["Vue", "Node.js"], "evidence": "完成内容发布页面。" },
+      "assertions": ["does not claim Kafka, Redis, distributed transactions, or microservice governance as implemented", "unrelated challenge synthesis is emitted as a warning or excluded"]
+    },
+    {
+      "id": "three-mode-same-evidence",
+      "input": { "project": "订单平台", "technologies": ["Java", "Redis"], "evidence": "参与热点数据缓存改造。" },
+      "assertions": ["conservative, balanced, and aggressive preserve the same original wording", "balanced records assumptions for inferred cache behavior", "aggressive still preserves hard facts and marks uncertainty candidate", "all high-risk outputs include at least 3 drills"]
+    }
+  ]
+}

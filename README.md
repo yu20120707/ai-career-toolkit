@@ -1,64 +1,57 @@
 # AI Career Toolkit
 
-一套用于自动化求职全链路的 AI Agent Skills，遵循 [agentskills.io](https://agentskills.io/specification) 规范。
+一个以本地 Career Workspace 为核心的求职 Skill 工具链：从原始经历增强、岗位发现、JD 定制简历、投递版本锁定，到针对实际投递内容的面试训练与复盘。
+
+## Five-minute workflow
+
+```mermaid
+flowchart LR
+  B[Build profile + claims] --> J[Find jobs]
+  J --> T[Tailor per JD]
+  T --> P[Publish + track]
+  P --> I[Interview drill]
+  I --> O[Review outcome]
+```
+
+1. `resume-builder` creates `candidate-profile.json` and traceable `enhancement-claims.json`.
+2. `job-hunter` normalizes jobs and applies hard filters before ranking.
+3. `resume-tailor` creates `tailored-resume.json` + Markdown for one JD, selecting only active claims.
+4. `resume-publisher` renders the structured model to DOCX; `application-tracker` locks the submitted version.
+5. `interview-griller` tests the actual JD, submitted resume, claims, and prior feedback; `outcome-review` writes reusable weak points.
 
 ## Skills
 
-| Skill | 功能 | 依赖 |
-|-------|------|------|
-| [resume-builder](./resume-builder/) | 对话式简历完善：挖掘经历、包装增强、制造技术重难点 | 无外部依赖 |
-| [resume-publisher](./resume-publisher/) | 简历投递版生成：将 Markdown 简历排版导出为 DOCX | python-docx |
-| [interview-griller](./interview-griller/) | 模拟面试拷打：基于简历深挖追问、实时提示、评分+学习报告 | 无外部依赖 |
-| [job-hunter](./job-hunter/) | 自动化社招岗位海选：并行爬取、智能匹配、薪资风评整合 | Playwright MCP |
+| Skill | Role |
+|---|---|
+| `resume-builder` | Master profile + traceable enhancement claims |
+| `job-hunter` | Adapter-based discovery, filtering, explainable fit score |
+| `resume-tailor` | JD-specific Resume Model and claim-selection report |
+| `resume-publisher` | DOCX renderer for Resume Model (Markdown compatible) |
+| `application-tracker` | Immutable application artifacts and status lifecycle |
+| `interview-griller` | Submitted-resume-aware technical interview loops |
+| `outcome-review` | Feedback → weak points → next-session priorities |
 
-## 快速开始
-
-### 1. 安装 Skills
-
-将 skill 目录复制到你的 agent skills 目录：
+## Install
 
 ```bash
-git clone https://github.com/June-PJ/ai-career-toolkit.git
-cp -r ai-career-toolkit/resume-builder <your-agent-skills-dir>/
-cp -r ai-career-toolkit/resume-publisher <your-agent-skills-dir>/
-cp -r ai-career-toolkit/interview-griller <your-agent-skills-dir>/
-cp -r ai-career-toolkit/job-hunter <your-agent-skills-dir>/
+git clone https://github.com/yu20120707/ai-career-toolkit.git
+cp -r ai-career-toolkit/{resume-builder,resume-tailor,resume-publisher,job-hunter,application-tracker,interview-griller,outcome-review} <your-agent-skills-dir>/
 ```
 
-### 2. 配置 Playwright MCP（job-hunter 需要）
+Keep real candidate workspaces outside the cloned repository or in a private directory. JSON files must conform to the contracts under [`schemas/`](schemas/README.md).
 
-在你的 agent MCP 配置文件中添加：
+## Documentation
 
-```json
-{
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["@playwright/mcp"]
-    }
-  }
-}
-```
+- [Architecture](docs/architecture.md)
+- [Workflow](docs/workflow.md)
+- [Enhancement policy](docs/enhancement-policy.md)
+- [Current-state baseline](CURRENT_STATE.md)
+- [Architecture decisions](docs/decisions.md)
+- [Regression fixtures](evals/)
 
-### 3. 使用流程
+## Non-goals
 
-```
-用户 → "帮我写简历"
-       → resume-builder skill 启动
-       → 对话引导 → 输出 resume.md
-
-用户 → "把简历导出成投递版 Word" + resume.md
-       → resume-publisher skill 启动
-       → 投递检查 → 排版生成 DOCX
-
-用户 → "拷打我的简历" + resume.md
-       → interview-griller skill 启动
-       → 选模式/风格 → 逐项目追问 → 输出评分卡 + 学习报告
-
-用户 → "帮我找工作" + resume.md
-       → job-hunter skill 启动
-       → 并行爬取 → 匹配分析 → 输出求职报告
-```
+This release does not implement a Web UI, a database service, or automatic job applications. It deliberately keeps the workflow inspectable and local-file-first.
 
 ## License
 

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yu20120707/ai-career-toolkit/schemas/job.schema.json",
+  "title": "Job Record",
+  "type": "object",
+  "required": ["schema_version", "id", "company", "title", "source", "url", "captured_at", "requirements"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "pattern": "^job_[a-z0-9_]+$" },
+    "company": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "location": { "type": "string" },
+    "work_mode": { "enum": ["onsite", "hybrid", "remote", "unknown"] },
+    "source": { "type": "object", "required": ["name", "confidence"], "additionalProperties": false, "properties": { "name": { "type": "string" }, "url": { "type": "string", "format": "uri" }, "confidence": { "enum": ["low", "medium", "high"] } } },
+    "url": { "type": "string", "format": "uri" },
+    "captured_at": { "type": "string", "format": "date-time" },
+    "requirements": { "type": "object", "required": ["must_have", "preferred"], "additionalProperties": false, "properties": { "must_have": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }, "preferred": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }, "responsibilities": { "type": "array", "items": { "type": "string" } }, "seniority": { "type": "string" } } },
+    "assessment": { "type": "object", "additionalProperties": false, "properties": { "hard_filter": { "enum": ["pass", "fail", "not_evaluated"] }, "fit_score": { "type": "integer", "minimum": 0, "maximum": 100 }, "direct_skills": { "type": "array", "items": { "type": "string" } }, "adjacent_skills": { "type": "array", "items": { "type": "string" } }, "gaps": { "type": "array", "items": { "type": "string" } } } }
+  }
+}

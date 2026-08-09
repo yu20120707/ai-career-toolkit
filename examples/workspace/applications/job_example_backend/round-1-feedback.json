@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0",
+  "application_id": "app_example_backend",
+  "round": "interview_1",
+  "created_at": "2026-08-09T12:00:00Z",
+  "weak_points": [
+    { "id": "weak_cache_consistency_01", "topic": "缓存一致性", "severity": "high", "claim_id": "claim_order_cache_01", "evidence": "无法说明写操作后的失效与重试策略。", "next_drill": "解释 Cache-Aside 更新失败时的补偿路径。" }
+  ]
+}

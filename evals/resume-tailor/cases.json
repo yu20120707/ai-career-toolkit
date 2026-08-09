@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0", "skill": "resume-tailor", "cases": [
+    {"id": "rabbitmq-to-kafka-adjacent", "input": {"jd_must_have": ["Kafka"], "profile_skills": ["RabbitMQ"]}, "assertions": ["Kafka is classified adjacent, not direct", "resume does not say the candidate used Kafka", "report describes transferable messaging capability"]},
+    {"id": "claim-selection-traceability", "input": {"active_claim_ids": ["claim_cache_01"], "high_risk_claim_ids": ["claim_cache_01"]}, "assertions": ["tailored resume model contains selected claim IDs", "tailor report lists high-risk drills", "candidate or rejected claims are excluded"]}
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0", "skill": "job-hunter", "cases": [
+    {"id": "blacklist-overrides-fit", "input": {"fit_score": 96, "industry": "outsourcing", "blacklist": ["outsourcing"]}, "assertions": ["hard_filter is fail", "job is excluded from recommendations regardless of score"]},
+    {"id": "dedupe-and-freshness", "input": {"same_job_from_two_sources": true, "posted_at": "unknown"}, "assertions": ["uses one canonical job record with merged sources", "unknown freshness is labeled rather than assumed current"]}
+  ]
+}

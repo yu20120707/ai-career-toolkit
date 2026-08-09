@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yu20120707/ai-career-toolkit/schemas/interview-feedback.schema.json",
+  "title": "Interview Feedback",
+  "type": "object",
+  "required": ["schema_version", "application_id", "round", "created_at", "weak_points"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" }, "application_id": { "type": "string", "pattern": "^app_[a-z0-9_]+$" }, "round": { "type": "string", "minLength": 1 }, "created_at": { "type": "string", "format": "date-time" },
+    "weak_points": { "type": "array", "items": { "type": "object", "required": ["id", "topic", "severity", "evidence"], "additionalProperties": false, "properties": { "id": { "type": "string", "pattern": "^weak_[a-z0-9_]+$" }, "topic": { "type": "string" }, "severity": { "enum": ["low", "medium", "high"] }, "claim_id": { "type": "string", "pattern": "^claim_[a-z0-9_]+$" }, "evidence": { "type": "string" }, "next_drill": { "type": "string" } } } }
+  }
+}

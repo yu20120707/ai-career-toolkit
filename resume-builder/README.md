@@ -1,27 +1,24 @@
 # resume-builder
 
-对话式技术简历完善 Skill。通过轻松聊天挖掘你的经历，用 STAR 法则 + 量化思维帮你把经历写亮，主动包装增强、制造技术重难点亮点。
-
-## 功能
-
-- 🎯 对话引导挖掘经历（一次一个问题，不堆积）
-- 📦 包装增强（数据放大、角色拔高、补充合理亮点）
-- 🔧 主动制造技术重难点（根据技术栈推断挑战）
-- 📄 输出结构化 Markdown 简历
-
-## 输入支持
-
-- PDF / Word / 纯文本 / Markdown（旧简历作参考）
-- 从零开始纯对话引导
+将原始经历转成可复用、可追问的 Master Career Profile，而不只是一次性生成一份简历。
 
 ## 输出
 
-`resume.md` — 结构化技术简历，可直接作为 [job-hunter](../job-hunter/) 的输入。
+- `candidate-profile.json`：项目、职责、技能和原始成果。
+- `enhancement-claims.json`：每个增强表述的来源、假设、风险和面试追问。
+- `master-resume.md`：只使用已确认 Claim 的通用 Markdown 简历。
+- `builder-warnings.md`：待澄清的冲突或证据缺口。
 
-## 使用
+输出的 JSON 分别遵循 [`candidate-profile`](../schemas/candidate-profile.schema.json) 与 [`enhancement-claim`](../schemas/enhancement-claim.schema.json) Schema。
 
-对话中说"帮我写简历"或"帮我完善简历"即可触发。
+## 三档增强
 
-## 依赖
+| 模式 | 默认 | 特点 |
+|---|---:|---|
+| Conservative | 否 | 仅改善表达，避免推断技术方案和指标。 |
+| Balanced | 是 | 允许合理估算与技术深挖，但记录假设和风险。 |
+| Aggressive | 否 | 最大化可解释的竞争力表达；所有不确定项先作为候选 Claim。 |
 
-无外部依赖。
+高风险 Claim 一律保留至少 3 个面试追问，确认后才会写进 `master-resume.md`。
+
+详细流程与规则见 [SKILL.md](SKILL.md)，示例见 [`examples/workspace`](../examples/workspace/)，回归场景见 [`evals/resume-builder`](../evals/resume-builder/)。

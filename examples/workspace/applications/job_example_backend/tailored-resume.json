@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "id": "resume_example_backend_01",
+  "candidate_id": "candidate_example",
+  "basics": { "name": "示例候选人", "headline": "Java 后端工程师", "contact": ["example@example.com", "上海"] },
+  "sections": [
+    { "title": "专业技能", "entries": [{ "heading": "后端开发", "bullets": ["Java、Spring Boot、MySQL、Redis", "具备消息系统的可迁移经验"] }] },
+    { "title": "项目经历", "entries": [{ "heading": "订单平台", "meta": "核心模块开发", "bullets": ["设计热点缓存策略，降低核心查询的重复数据库访问。"] }] }
+  ],
+  "claim_ids": ["claim_order_cache_01"],
+  "source": { "master_resume": "../../../master-resume.md", "job_id": "job_example_backend", "tailor_report": "tailor-report.md" }
+}

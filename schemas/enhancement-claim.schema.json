@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yu20120707/ai-career-toolkit/schemas/enhancement-claim.schema.json",
+  "title": "Enhancement Claim Set",
+  "description": "Traceable wording enhancements that must remain interview-defensible.",
+  "type": "object",
+  "required": ["schema_version", "candidate_id", "claims"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "candidate_id": { "type": "string" },
+    "claims": { "type": "array", "items": { "$ref": "#/$defs/claim" }, "uniqueItems": true }
+  },
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": ["id", "project_id", "original", "enhanced", "enhancement_types", "assumptions", "interview_risk", "defensibility", "drills", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^claim_[a-z0-9_]+$" },
+        "project_id": { "type": "string" },
+        "original": { "type": "string", "minLength": 1 },
+        "enhanced": { "type": "string", "minLength": 1 },
+        "enhancement_types": { "type": "array", "items": { "enum": ["wording", "role_upgrade", "technical_depth", "metric_estimation", "challenge_synthesis", "adjacent_skill"] }, "minItems": 1, "uniqueItems": true },
+        "assumptions": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "metric": { "$ref": "#/$defs/metric" },
+        "role_upgrade": { "$ref": "#/$defs/role_upgrade" },
+        "interview_risk": { "enum": ["low", "medium", "high"] },
+        "defensibility": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "drills": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 0 },
+        "status": { "enum": ["candidate", "active", "rejected", "retired"] },
+        "notes": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "interview_risk": { "const": "high" } }, "required": ["interview_risk"] }, "then": { "properties": { "drills": { "minItems": 3 } } } }
+      ]
+    },
+    "metric": { "type": "object", "required": ["name", "value", "confidence"], "additionalProperties": false, "properties": { "name": { "type": "string" }, "value": { "type": "string" }, "confidence": { "enum": ["low", "medium", "high"] } } },
+    "role_upgrade": { "type": "object", "required": ["from", "to"], "additionalProperties": false, "properties": { "from": { "type": "string" }, "to": { "type": "string" } } }
+  }
+}

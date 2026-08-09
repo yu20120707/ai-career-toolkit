@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "id": "job_example_backend",
+  "company": "Example Labs",
+  "title": "Java 后端开发工程师",
+  "location": "上海",
+  "work_mode": "hybrid",
+  "source": { "name": "company-careers", "url": "https://careers.example.com/jobs/backend", "confidence": "high" },
+  "url": "https://careers.example.com/jobs/backend",
+  "captured_at": "2026-08-09T12:00:00Z",
+  "requirements": { "must_have": ["Java", "Spring Boot", "Redis"], "preferred": ["Kafka"], "responsibilities": ["开发核心服务"], "seniority": "junior" },
+  "assessment": { "hard_filter": "pass", "fit_score": 82, "direct_skills": ["Java", "Spring Boot", "Redis"], "adjacent_skills": [], "gaps": ["Kafka"] }
+}

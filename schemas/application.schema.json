@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yu20120707/ai-career-toolkit/schemas/application.schema.json",
+  "title": "Application Record",
+  "type": "object",
+  "required": ["schema_version", "id", "job_id", "status", "created_at", "artifacts"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "pattern": "^app_[a-z0-9_]+$" },
+    "job_id": { "type": "string", "pattern": "^job_[a-z0-9_]+$" },
+    "status": { "enum": ["discovered", "shortlisted", "preparing", "applied", "screening", "interview_1", "interview_2", "final", "offer", "rejected", "withdrawn"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "artifacts": { "type": "object", "required": ["job_record"], "additionalProperties": false, "properties": { "job_record": { "type": "string" }, "jd_snapshot": { "type": "string" }, "tailored_resume": { "type": "string" }, "submitted_resume": { "type": "string" }, "claim_ids": { "type": "array", "items": { "type": "string", "pattern": "^claim_[a-z0-9_]+$" }, "uniqueItems": true } } },
+    "interviews": { "type": "array", "items": { "type": "object", "required": ["round", "date", "result"], "additionalProperties": false, "properties": { "round": { "type": "string" }, "date": { "type": "string", "format": "date" }, "result": { "enum": ["pending", "advanced", "rejected", "unknown"] }, "feedback_path": { "type": "string" } } } },
+    "next_action": { "type": "string" }
+  }
+}
