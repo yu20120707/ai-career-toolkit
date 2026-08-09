@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yu20120707/ai-career-toolkit/schemas/candidate-profile.schema.json",
+  "title": "Candidate Profile",
+  "description": "Versioned master profile shared by career-toolkit skills.",
+  "type": "object",
+  "required": ["schema_version", "candidate_id", "basics", "projects", "skills"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "candidate_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$" },
+    "basics": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "location": { "type": "string" },
+        "target_roles": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true }
+      }
+    },
+    "summary": { "type": "string" },
+    "projects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/project" },
+      "uniqueItems": true
+    },
+    "experience": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/experience" }
+    },
+    "education": { "type": "array", "items": { "$ref": "#/$defs/education" } },
+    "skills": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/skill" },
+      "minItems": 1
+    },
+    "source_files": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{2,63}$" },
+    "project": {
+      "type": "object",
+      "required": ["id", "name", "role", "technologies", "responsibilities"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "period": { "$ref": "#/$defs/period" },
+        "context": { "type": "string" },
+        "technologies": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "responsibilities": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "outcomes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "experience": {
+      "type": "object",
+      "required": ["id", "organization", "title"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "organization": { "type": "string" },
+        "title": { "type": "string" },
+        "period": { "$ref": "#/$defs/period" },
+        "responsibilities": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "education": {
+      "type": "object",
+      "required": ["school"],
+      "additionalProperties": false,
+      "properties": { "school": { "type": "string" }, "degree": { "type": "string" }, "major": { "type": "string" }, "period": { "$ref": "#/$defs/period" } }
+    },
+    "skill": {
+      "type": "object",
+      "required": ["name", "proficiency"],
+      "additionalProperties": false,
+      "properties": { "name": { "type": "string" }, "proficiency": { "enum": ["familiar", "working", "strong"] }, "evidence_project_ids": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true } }
+    },
+    "period": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "start": { "type": "string", "pattern": "^[0-9]{4}(-[0-9]{2})?$" }, "end": { "type": "string", "pattern": "^[0-9]{4}(-[0-9]{2})?$" } }
+    }
+  }
+}
