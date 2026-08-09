@@ -1,161 +1,126 @@
 ---
 name: resume-builder
-description: Use when user wants to create, improve, or polish a technical resume — especially when they don't know their highlights, haven't updated in a while, or need help packaging experiences with depth and impact
+description: Use when the user wants to create, improve, or tailor the source material for a technical resume. Builds a reusable Candidate Profile, traceable Enhancement Claims, and a Markdown master resume from a conversation or an existing resume.
 ---
 
-# Resume Builder（技术简历完善）
+# Resume Builder — Enhancement Engine
 
-## Overview
+Turn raw career evidence into a reusable, interview-defensible master profile. This Skill is the **only** source of new resume enhancements during the current workflow; `resume-publisher` renders reviewed content and must not strengthen it.
 
-对话式技术简历完善工具。通过轻松聊天挖掘用户经历，用 STAR 法则 + 量化思维帮用户把经历写亮，**主动包装增强、制造技术重难点亮点**，输出结构化 Markdown 简历。
+## Inputs
 
-## When to Use
+- A conversation, raw resume, or project notes (PDF, DOCX, Markdown, or plain text).
+- Optional target role(s).
+- Optional enhancement mode: `conservative`, `balanced` (default), or `aggressive`.
 
-- 用户想写/更新简历
-- 用户不清楚自己的亮点
-- 用户有经历但不会包装
-- 用户简历缺乏技术深度
-- 用户久未更新简历
+Treat an old resume as evidence to clarify, not as automatically current truth. Keep hard facts stable: organization/project identity, education, credentials, employment dates, and named external records must never be invented.
 
-## Core Flow
+## Outputs
 
-```dot
-digraph resume_builder {
-    "输入" [shape=box, label="接收输入\n(旧简历文件 / 从零开始)"];
-    "方向" [shape=box, label="确认/推断目标方向"];
-    "对话" [shape=box, label="对话引导\n逐段挖掘经历"];
-    "包装" [shape=box, label="包装增强\n制造重难点"];
-    "生成" [shape=box, label="生成 Markdown 简历"];
-    "确认" [shape=diamond, label="用户确认?"];
-    "输出" [shape=doublecircle, label="输出 resume.md"];
+Write these files in a Career Workspace, using the paths below unless the user provides an existing workspace.
 
-    "输入" -> "方向" -> "对话" -> "包装" -> "生成" -> "确认";
-    "确认" -> "对话" [label="修改"];
-    "确认" -> "输出" [label="通过"];
-}
+| Artifact | Path | Contract |
+|---|---|---|
+| Master profile | `candidate-profile.json` | Conforms to `../schemas/candidate-profile.schema.json` |
+| Claim map | `enhancement-claims.json` | Conforms to `../schemas/enhancement-claim.schema.json` |
+| Readable master resume | `master-resume.md` | Contains only approved `active` claims plus unenhanced facts |
+| Warnings | `builder-warnings.md` | Empty is allowed; records unresolved contradictions and missing evidence |
+
+Use stable IDs. A project ID and a claim ID must not be reused for a different entity. Do not overwrite submitted resume artifacts from later workflow stages.
+
+## Modes
+
+| Mode | Use | Allowed behavior |
+|---|---|---|
+| `conservative` | User prioritizes literal accuracy | Improve wording and structure; do not estimate metrics or add inferred technical designs without user confirmation. |
+| `balanced` | Default | Make reasonable, explicitly qualified estimates and natural technical deepening from the existing stack; retain assumptions and risk. |
+| `aggressive` | User explicitly wants a more competitive draft | Explore the strongest coherent role framing and challenge synthesis, but keep uncertain claims as `candidate` until approved. Never manufacture hard facts. |
+
+All modes require the same provenance fields. Lower confidence changes must not be hidden by stronger prose.
+
+## Workflow
+
+```mermaid
+flowchart TD
+  A[Parse evidence] --> B[Build candidate profile]
+  B --> C[Propose claims]
+  C --> D[Check consistency]
+  D --> E[Create drills]
+  E --> F[Confirm and publish]
 ```
 
-## 输入处理
+### 1. Parse evidence
 
-支持 PDF / Word / 纯文本 / Markdown / 无文件（纯对话）。自动检测格式。
+Split raw material into projects, roles, dates, technologies, responsibilities, outcomes, known scale, and unknowns. Ask one focused question at a time when a missing detail materially changes an important claim. Prefer questions that establish evidence: ownership, traffic/data scale, before/after behavior, failure modes, measurement source, and trade-offs.
 
-旧简历处理：**当背景参考，不逐条确认**——对话中自然参照，但不盲信（可能已过时）。
+### 2. Build the profile
 
-## 对话引导规则
+Create `candidate-profile.json` first. Preserve raw responsibilities and outcomes in it rather than replacing them with polished bullets. Attach skills to project evidence through `evidence_project_ids` where possible.
 
-### 风格
-- 轻松引导，像朋友聊天
-- **一次只问一个问题**
-- 用户回答模糊时自然追问
+### 3. Propose claims
 
-### 引导顺序
-1. 目标方向（有就用，没有后面推断）
-2. 教育背景
-3. 工作经历（每段追问量化）
-4. 项目经历（STAR + 主动制造重难点）
-5. 技能/开源/证书/其他
+For each high-value enhancement, create a claim with:
 
-### 追问示例
-- "这个项目大概服务多少用户？并发量级大概是？"
-- "你负责的部分有没有遇到过性能瓶颈？"
-- "团队多大？你是什么角色？"
-- "优化具体快了多少？没数据的话我们估一个合理的"
+- `original`: user-provided wording or an approved earlier statement;
+- `enhanced`: the candidate resume wording;
+- `enhancement_types`: one or more contract values;
+- `assumptions`: every inference and estimation basis;
+- `metric`: only when a number is used, with confidence;
+- `role_upgrade`: when responsibility framing changes;
+- `interview_risk`, `defensibility`, `drills`, and `status`.
 
-### 经历点评
-每聊完一段经历给一句包装建议：
-> "这个经历很适合包装成'主导了XX系统架构升级'，面试官会感兴趣"
+Allowed enhancement patterns are wording, role upgrade, technical depth, metric estimation, challenge synthesis, and adjacent skill. Derive technical depth from the project stack and context; do not transplant unrelated systems. Use ranges or qualified language such as “约” for estimates. Exact-looking numbers require a credible source.
 
-## 包装增强策略
+### 4. Check consistency
 
-### 数据放大
-- "优化了接口" → "接口响应时间降低 60%，QPS 提升 3 倍"
-- "做了个后台" → "支撑 XX 业务线，日均处理 XX 万条数据"
+Before producing a resume, check these invariants across the profile and all claims:
 
-### 角色拔高
-- 参与者 → "核心开发" / "技术负责人"
-- 用了某框架 → "主导技术选型与落地"
-- 修了 bug → "负责系统稳定性保障"
+- project IDs, technologies, roles, and dates resolve to the profile;
+- metrics use compatible scopes and units; a project does not claim conflicting throughput, latency, or ownership levels;
+- a role upgrade is supported by recorded design, decision, incident, or delivery scope;
+- a technical challenge is reachable from the recorded architecture;
+- a skill is not presented as direct experience when its evidence is only adjacent;
+- hard facts are unchanged from the supplied evidence.
 
-### 补充合理亮点
-根据技术栈推断用户可能做过但没提的事：
-- Redis → "设计分布式缓存方案，命中率 95%+"
-- MQ → "消息队列异步解耦，峰值吞吐提升 X 倍"
-- Docker → "容器化部署 + CI/CD 流水线搭建"
+Put unresolved items in `builder-warnings.md` and keep their claims as `candidate`, not `active`.
 
-### 主动制造技术重难点
+### 5. Map interview risk to drills
 
-根据项目技术栈推断**大概率会遇到的技术挑战**，编排进简历：
+Assign risk based on how much the statement depends on inference, estimation, or broad ownership. `high` risk claims must have at least three concrete drills; aim for 3–8. Drill beyond definitions: measurement method, design alternatives, failure handling, trade-offs, and ownership boundaries. A user who cannot explain a claim should lower its scope, add evidence, or reject it.
 
-| 项目类型 | 可制造的重难点 |
-|----------|---------------|
-| 微服务 | 分布式事务一致性（Saga/TCC）、服务治理、链路追踪 |
-| 高并发 | 限流降级、热点数据、连接池优化 |
-| 搜索 | 亿级索引优化、搜索延迟 P99 < 50ms |
-| 数据平台 | 离线/实时管道、日处理 TB 级、数据倾斜治理 |
-| 前端 | 首屏性能优化、微前端拆分、SSR 方案 |
+### 6. Confirm and publish
 
-对话中问用户"你这个项目有没有遇到 XX 问题？"：
-- 有 → 深挖细节
-- 没有 → 帮编排合理的，与项目上下文自洽
+Show candidate enhancements grouped by risk and ask for confirmation before switching a claim to `active`. Then generate `master-resume.md` from facts plus active claims only. Rejected ideas remain traceable as `rejected`; do not silently delete their provenance.
 
-### 约束
-- 包装内容必须与技术栈**逻辑自洽**（不出现矛盾）
-- 所有"制造"的亮点让用户过目确认后再写入最终简历
-
-## 目标方向确定
-
-- 用户明确 → 直接使用
-- 用户未明确 → 根据经历推断，建议 2-3 个方向，用户确认
-
-## 输出格式
-
-Markdown 文件，结构：
+## Markdown Resume Shape
 
 ```markdown
-# 姓名
+# Name
 
 ## 基本信息
-手机 | 邮箱 | 目标岗位 | GitHub/博客
+联系方式 | 目标岗位 | 链接
 
 ## 个人总结
-X年XX方向经验，擅长…，主导过…
 
 ## 专业技能
-- 语言：…
-- 框架：…
-- 中间件：…
-- 数据库：…
-- DevOps：…
 
 ## 工作经历
-### 公司 — 职位（时间）
-- 量化亮点 bullet
 
 ## 项目经历
 ### 项目名（技术栈）
-**背景**：一句话
-**职责**：角色 + 核心贡献
-**重难点**：技术挑战 + 解决方案
-**成果**：量化结果
+- 已确认的职责和成果
+- 仅引用已激活的 Enhancement Claim
 
 ## 教育背景
-
-## 其他（开源/博客/证书/竞赛）
 ```
 
-## 边界
+## Boundaries
 
-- ✅ 内容生产、经历挖掘、包装增强
-- ❌ 不做排版/导出（交其他 skill）
-- ❌ 不做岗位匹配/JD 对齐（交 job-hunter skill）
-- ❌ 不需要网络搜索或浏览器
+- This Skill creates the master profile and claims; `resume-tailor` will later select/reframe them for a specific JD.
+- Do not claim use of a technology merely because a similar technology was used. Record it as `adjacent_skill` where relevant.
+- Do not convert uncertainty into an `active` claim without candidate confirmation.
+- Do not use web browsing merely to make a candidate’s private experience sound more impressive.
 
-## Common Mistakes
+## Regression fixtures
 
-| 错误 | 修正 |
-|------|------|
-| 一次问多个问题 | 一次只问一个 |
-| 照搬旧简历不追问 | 旧简历只作参考，通过对话确认真实性 |
-| 包装与技术栈矛盾 | 确保制造的重难点与实际用的技术自洽 |
-| 忘记让用户确认包装内容 | 生成前展示包装建议，用户同意才写入 |
-| 经历平铺没有重点 | 按目标方向排序，高含金量经历放前面 |
+Use `../evals/resume-builder/cases.json` for behavior checks. The fixtures cover metric estimation, role upgrade, stack-consistent challenge synthesis, three modes, and high-risk drill coverage.

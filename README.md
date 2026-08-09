@@ -4,7 +4,7 @@
 
 ## 当前架构
 
-Phase 0 + Phase 1 已建立共享契约；现有四个 Skill 仍保持兼容。后续阶段会按此契约逐个接入。
+Phase 0–2 已完成：共享契约、Workspace 示例，以及作为 Enhancement Engine 的 `resume-builder` 已落地；其余 Skill 仍保持兼容，后续阶段会按同一契约逐个接入。
 
 ```mermaid
 flowchart TD
@@ -27,7 +27,7 @@ flowchart TD
 
 | Skill | 功能 | 依赖 |
 |-------|------|------|
-| [resume-builder](./resume-builder/) | 对话式简历完善：挖掘经历、包装增强、制造技术重难点 | 无外部依赖 |
+| [resume-builder](./resume-builder/) | Enhancement Engine：生成可追溯 Profile、Claim Map 和 Master Resume | 无外部依赖 |
 | [resume-publisher](./resume-publisher/) | 简历投递版生成：将 Markdown 简历排版导出为 DOCX | python-docx |
 | [interview-griller](./interview-griller/) | 模拟面试拷打：基于简历深挖追问、实时提示、评分+学习报告 | 无外部依赖 |
 | [job-hunter](./job-hunter/) | 自动化社招岗位海选：并行爬取、智能匹配、薪资风评整合 | Playwright MCP |
@@ -66,7 +66,7 @@ cp -r ai-career-toolkit/job-hunter <your-agent-skills-dir>/
 ```
 用户 → "帮我写简历"
        → resume-builder skill 启动
-       → 对话引导 → 输出 resume.md
+       → 对话引导 → 输出 candidate-profile.json + enhancement-claims.json + master-resume.md
 
 用户 → "把简历导出成投递版 Word" + resume.md
        → resume-publisher skill 启动

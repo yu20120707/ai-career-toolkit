@@ -29,3 +29,9 @@
 - **Status:** accepted
 - **Decision:** The publisher must not introduce or strengthen claims. It renders a reviewed source and eventually a structured resume model.
 - **Reason:** Separating content decisions from layout prevents unnoticed factual drift.
+
+## ADR-006 — Enhancement modes retain one claim contract
+
+- **Status:** accepted
+- **Decision:** `resume-builder` supports conservative, balanced (default), and aggressive modes. All use the same profile and claim schemas; mode changes the proposal threshold, never the provenance requirement.
+- **Reason:** A candidate should be able to choose presentation strength without creating untraceable or incompatible downstream data.
