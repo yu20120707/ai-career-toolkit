@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "candidate_id": "chenyu_demo",
+  "claims": [
+    {
+      "id": "claim_order_platform_cache_01",
+      "project_id": "order_platform",
+      "original": "使用 Redis 做热点数据缓存，减少重复数据库查询。",
+      "enhanced": "参与设计热点订单查询的 Cache-Aside 策略，降低重复数据库访问；在读多写少场景下将缓存命中率维持在约 90% 以上。",
+      "enhancement_types": ["technical_depth", "metric_estimation"],
+      "assumptions": ["热点订单查询存在重复访问", "读多写少且键复用率较高", "命中率为估算区间，需在面试中说明统计口径"],
+      "metric": { "name": "cache_hit_rate", "value": "约 90%+", "confidence": "medium" },
+      "interview_risk": "high",
+      "defensibility": 3,
+      "drills": ["缓存命中率按什么时间窗口和口径统计？", "为什么选择 Cache-Aside，更新时如何避免脏读？", "TTL 如何设置，如何处理缓存击穿和热 key？"],
+      "status": "candidate"
+    }
+  ]
+}
