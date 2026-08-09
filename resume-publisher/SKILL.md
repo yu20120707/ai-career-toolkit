@@ -1,17 +1,17 @@
 ---
 name: resume-publisher
-description: Use when converting a finalized Markdown resume into a polished DOCX file for job applications, especially when the user asks to format, export, publish, typeset, or prepare a resume for submission.
+description: Use when converting a reviewed structured Resume Model (preferred) or finalized Markdown resume into a polished DOCX file for job applications.
 ---
 
 # Resume Publisher
 
 ## Overview
 
-Turn a reviewed Markdown resume into a clean, ATS-friendly Word DOCX deliverable. Treat the Markdown file as the source of truth; do not rewrite facts or inflate claims unless the user explicitly asks for content edits.
+Turn a reviewed Resume Model into a clean, ATS-friendly Word DOCX deliverable. `schemas/resume-model.schema.json` is preferred; Markdown remains a compatibility input. The publisher is a renderer and must never rewrite facts, infer fields, or strengthen claims.
 
 ## Workflow
 
-1. Read the Markdown resume and identify the target role, name, contact block, sections, project entries, and bullets.
+1. Validate the Resume Model (preferred) or parse the Markdown compatibility input. Reject missing name, empty sections, empty headings, or empty bullet text rather than guessing fields.
 2. Run the delivery checklist in `references/delivery_checklist.md`.
 3. Apply the layout rules in `references/resume_layout_rules.md`.
 4. Generate DOCX with `scripts/build_resume_docx.py`.
@@ -22,7 +22,7 @@ Turn a reviewed Markdown resume into a clean, ATS-friendly Word DOCX deliverable
 Use the script from the skill directory:
 
 ```bash
-python scripts/build_resume_docx.py path/to/resume.md --outdir path/to/output
+python scripts/build_resume_docx.py path/to/tailored-resume.json --outdir path/to/output
 ```
 
 Optional flags:
@@ -40,7 +40,7 @@ Create one file:
 
 - `<姓名>-<岗位方向>.docx`
 
-Use the DOCX as the editable deliverable. Keep the source Markdown unchanged unless the user asks for resume content edits.
+Use the DOCX as the editable deliverable. Keep source files unchanged unless the user asks for content edits. When an application exists, place the emitted immutable DOCX under its application directory and record the exact path before marking it submitted.
 
 ## Publishing Rules
 
@@ -48,7 +48,7 @@ Use the DOCX as the editable deliverable. Keep the source Markdown unchanged unl
 - Use simple typography, clear section headings, compact spacing, and real text.
 - Do not use skill bars, radar charts, decorative icons, or image-only resume layouts.
 - Do not add a headshot by default for technical/ATS-oriented submissions. Add one only when the employer expects it, the platform asks for it, or the user explicitly requests it.
-- Do not add metrics, tools, titles, or project scope that are not present in the source or confirmed by the user.
+- Do not add metrics, tools, titles, project scope, or claims. The model's `claim_ids` are traceability metadata, not license to create prose.
 - Remove Markdown-only artifacts from the deliverable, including horizontal rules, raw `#`, raw `**`, and code fences.
 - Keep links as visible text when they are useful for ATS parsing.
 
@@ -60,4 +60,4 @@ Use the DOCX as the editable deliverable. Keep the source Markdown unchanged unl
 | Making a flashy visual template | Use ATS-friendly text layout. |
 | Shipping DOCX without visual review | Render or open-check the document first. |
 | Trying to automate non-DOCX export from the skill | Generate DOCX only. |
-| Letting Chinese text use random fallback fonts | Set explicit CJK fonts in styles. |
+| Letting Chinese text use random fallback fonts | Use the declared Windows/macOS/Linux CJK fallback chain. |

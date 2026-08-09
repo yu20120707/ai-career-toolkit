@@ -9,5 +9,8 @@ Suggested layout:
       enhancement-claims.json
       jobs/
       applications/
+      weak-points.json
 
 Validate new records against the contracts in `../schemas/` before handing them to another Skill.
+
+Use `applications/<job-id>/` to store the JD snapshot, tailored Resume Model, submitted DOCX, and one file per interview round. Keep a real workspace private; repository fixtures contain only synthetic data.

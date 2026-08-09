@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0", "skill": "interview-griller", "cases": [
+    {"id": "high-risk-cache-chain", "input": {"claim_id": "claim_cache_01", "risk": "high", "drills": ["命中率口径", "TTL", "缓存一致性"]}, "assertions": ["plan allocates a 3-5 layer chain", "questions cover measurement, TTL or invalidation, consistency/failure, and trade-off", "feedback links poor performance to claim ID"]},
+    {"id": "prior-feedback-priority", "input": {"weak_point": {"severity": "high", "topic": "消息可靠性"}}, "assertions": ["question plan reserves 20% for prior weak points", "high severity weak point appears before generic questions", "output uses readiness rather than pass probability"]}
+  ]
+}

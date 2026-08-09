@@ -1,194 +1,54 @@
 ---
 name: interview-griller
-description: 多模式面试打磨器 — 基于简历深挖项目、系统设计、手撕算法，输出评分卡与学习报告。Use when user wants to practice technical interviews — drills into resume projects, system design, coding algorithms, identifies weak points, provides real-time hints, and outputs a scorecard with study guide.
+description: Use when practicing a specific technical interview against the actual submitted resume, target JD, claim map, current round, and prior feedback.
 ---
 
-# Interview Griller（模拟面试打磨器）
+# Interview Griller
 
-## Overview
+Run an application-aware technical interview. The goal is to test the exact story submitted for this role, identify weaknesses, and return reusable feedback—not to estimate a pass probability.
 
-多模式模拟面试工具，基于简历逐项目深挖追问，可选系统设计、手撕算法。
+## Inputs
 
-## When to Use
+Required for an application-aware session:
 
-- 简历写完想验证能不能兜住
-- 面试前想模拟被拷打
-- 想知道简历哪些点容易被问穿
-- `resume-builder` 输出后自测充水部分
+- Job record/JD; `applications/<job-id>/submitted-resume.docx` or `tailored-resume.md`; and selected `claim_ids`.
+- `enhancement-claims.json` for provenance, risks, and drills.
+- Current interview round (default `screening`) and optional prior `interview-feedback.json` / `weak-points.json`.
 
-## 输入
+For a resume-only session, state that no JD or submitted-artifact validation is available and ask for them before claiming application-specific coverage.
 
-### 简历（必选）
-支持 PDF / Word / 纯文本 / Markdown。
+## Question plan
 
-### 配置（对话中询问）
+Build a plan before asking the first question. Default allocation is:
 
-| 配置项 | 选项 | 默认 |
-|--------|------|------|
-| 面试模式 | 一面（基础追问）/ 二面（架构深挖）/ 三面（系统设计+协作）/ 手撕算法 / 全流程模拟 | 一面 |
-| 面试官风格 | 友好引导 / 压力追问 | 友好 |
-| 目标公司类型 | 大厂 / 外企 / 创业公司 / 不指定 | 不指定 |
-| 目标职级 | Junior / Mid / Senior / Staff | Junior |
-| 计时模式 | 关闭 / 温和（2min/题）/ 严格（1min/题） | 关闭 |
+| Source | Weight | Rule |
+|---|---:|---|
+| Selected high-value/high-risk claims | 40% | Each high-risk claim gets a 3–5 layer chain. |
+| JD must-have skills and responsibilities | 25% | Prefer the actual job wording. |
+| Prior weak points | 20% | Prioritize high severity and repeated misses. |
+| New/general technical ability | 15% | Use only after the application context is covered. |
 
-## 面试模式
+For a high-risk cache claim, the chain must include evidence/measurement, design or TTL/invalidation, consistency/failure behavior, trade-off, and ownership boundary where applicable. Do not stop at a definition question.
 
-### 一面（基础追问）
-围绕简历技术栈，考察"是什么/怎么做的/为什么这样做"。
-- 答对换角度再追一层（"那并发场景呢？"）
-- 答错给提示（"想想 CAP 定理"），记录薄弱点
-- 完全不会给答案框架，标记盲区
+## Conduct
 
-### 二面（架构深挖）
-围绕简历项目的架构选型和设计决策。
-- "为什么选这个方案？替代方案？边界场景？"
-- 挑战性假设："数据量翻 100 倍怎么办？""中间件挂了呢？"
+- Ask one question at a time; do not reveal the ideal answer early.
+- Adapt depth after each answer: A → harder trade-off; B → one more layer; C → guided retry; D → concise explanation, retry, then score.
+- Keep style (friendly or pressure) independent from scoring.
+- Do not ask unrelated random trivia just to fill a quota.
 
-### 三面 / 交叉面（系统设计 + 协作）
-- **系统设计**：根据简历技术栈出题，白板式引导
-- **跨团队协作**：排期冲突、方案评审、事故定责
-- **Code Review**：给伪代码找出问题
+## Outputs
 
-### 手撕算法（可选）
-开启后面试中穿插算法题。
-- **题目**：数组/链表/树/哈希/二分/滑动窗口/双指针/DFS/BFS/DP
-- **考察**：思路沟通 → 代码风格 → 复杂度 → 测试用例
-- **提示**：卡住时给思路，不给完整代码（除非放弃）
+Write under `applications/<job-id>/interview/` when an application exists:
 
-### 全流程模拟
-依次进行：一面 → 二面 → 三面 → 手撕算法（可选），每轮给反馈。
+- `round-<n>-scorecard.md`: readiness, risk, dimensions, question coverage, and evidence-backed assessment.
+- `round-<n>-feedback.json`: conforms to `schemas/interview-feedback.schema.json`; include every C/D weak point and linked claim ID when known.
+- `round-<n>-transcript.md`: question, answer summary, follow-up layer, and grade.
 
-## 面试官风格
-### 友好引导
-追问温和，鼓励式反馈。
+Do not output a fabricated “pass probability.” Use readiness (`not_ready`, `developing`, `ready`) plus concrete risks and next drills.
 
-### 压力追问
-连环比问，故意挑衅，评分不受风格影响。
+## Boundaries
 
-## 对话行为规则
-- 一次一问，不提前暴露答案
-- 追问最多 3-4 层，切换项目时告知进度
-- 答不上来给提示 + 方向，不展开讲解
-- 用户随时可喊停
-
-## 自适应难度
-| 上题等级 | 调整策略 |
-|---------|---------|
-| A | 增加追问深度，提出挑战性假设 |
-| B | 保持难度，多问一层细节 |
-| C | 降低深度，增加引导 |
-| D | 先给解析，下题换方向 |
-
-## 输出
-
-### interview-scorecard.md（评分卡）
-```markdown
-# 模拟面试评分卡
-## 基本信息
-- 面试模式：一面 | 目标公司：xxx | 目标职级：Junior
-- 总题数：X 题 | 总用时：Y 分钟
-
-## 多维评分
-| 维度 | 得分(1-5) | 说明 |
-|-----|----------|------|
-| 技术深度 | 4.0 | 原理理解充分 |
-| 系统思维 | 3.5 | 有一定架构意识 |
-| 表达清晰度 | 4.5 | 结构清晰 |
-| 问题解决能力 | 3.0 | 方案不完整 |
-| 综合 | 3.8 | |
-
-## 逐题评分
-| # | 项目 | 问题 | 表现摘要 | 等级 |
-|---|------|------|----------|------|
-| 1 | XXX系统 | "MQ 消息丢失怎么处理？" | 提到 ACK 但缺持久化 | B |
-| 2 | XXX系统 | "为什么选 Kafka 不选 RabbitMQ？" | 完全答不上 | D |
-
-## 薄弱点深度分析
-### [D-1] Kafka vs RabbitMQ 选型
-- **缺失知识点**：消息模型差异、吞吐量场景、持久化机制
-- **补充示例**：
-  > Kafka 分区日志 → 高吞吐流式（日志/指标）
-  > RabbitMQ 队列 → 可靠投递（任务调度）
-  > 选型：需消息回溯 → Kafka；需灵活路由 → RabbitMQ
-- **推荐学习**：
-  1. 《Kafka 权威指南》第 1-3 章
-  2. search "Kafka vs RabbitMQ 选型对比"
-
-## 整体评估
-- 通过概率：XX% | 强项：... | 弱项：...
-```
-
-### interview-study-guide.md（学习报告）
-```markdown
-# 学习报告
-## 薄弱点全景
-| 薄弱点 | 等级 | 紧急度 | 涉及项目 |
-|--------|------|--------|---------|
-| Kafka vs RabbitMQ | D | 🔴 高 | XXX系统 |
-| 分布式事务 | C | 🟡 中 | XXX系统 |
-
-## 🔴 D 级 — 完全不会
-### Kafka vs RabbitMQ 选型
-- **回答框架**：
-  1. 消息模型（分区日志 vs 队列）
-  2. 适用场景（高吞吐 vs 可靠投递）
-  3. 关键差异（回溯、顺序消费、Exactly-Once）
-- **学习推荐**：search "Kafka vs RabbitMQ 选型对比"
-
-## 🟡 C 级 — 知道但说不清
-### 缓存一致性
-- **完整方案**：Cache-Aside（推荐），删缓存失败 → 重试 / binlog 订阅
-
-## 🎯 下次重点准备
-1. Kafka 消息模型（优先）
-2. 分布式事务方案
-```
-
-### interview-transcript.md（面试纪要）
-```markdown
-# 面试纪要
-- 日期：YYYY-MM-DD | 模式：一面 | 时长：45 分钟
-| 时间 | 方向 | 对话摘要 |
-|-----|------|---------|
-| 00:00-05:00 | 自我介绍 | 简述 XXX 项目 |
-| 05:00-12:00 | 技术追问 | 问：XX → 答：XXX → 判定：B |
-```
-
-## 等级标准
-| 等级 | 含义 |
-|------|------|
-| A | 回答完整准确，追问也兜得住 |
-| B | 大方向对，细节有缺漏 |
-| C | 知道是什么但说不清为什么 |
-| D | 完全答不上 |
-
-## 薄弱点分析模板
-每个 D/C 级薄弱点展开为：面试场景 → 缺失知识点 → 回答框架 → 补充示例 → 推荐学习。
-
-## 公司面试风格适配
-| 目标公司 | 特点 | 适配策略 |
-|---------|------|---------|
-| 大厂（BAT/TMD/华为等） | 深挖原理、边界场景 | 注重底层机制和边界条件 |
-| 外企（Google/Meta等） | 系统设计、行为面 | 强调问题解决过程 |
-| 创业公司 | 全栈、结果导向 | 侧重项目落地细节 |
-
-## 职级适配
-| 职级 | 侧重点 |
-|------|--------|
-| Junior | 基础知识扎实度、代码质量 |
-| Mid | 独立解决问题、技术选型 |
-| Senior | 架构设计、团队影响力、trade-off |
-| Staff+ | 跨团队协调、技术战略 |
-
-## 回答质量评估
-| 反模式 | 示例 | 引导 |
-|--------|------|------|
-| 规避问题 | "记不清了" | 引导根据原理推测 |
-| 过度模糊 | "做了优化" | 追问具体做了什么 |
-| 虚化数字 | "大幅提升" | 追问具体百分比 |
-
-## 边界
-- ✅ 基于简历项目出题、追问、评分、系统设计、手撕算法（可选）
-- ❌ 不做简历修改（交给 `resume-builder`）
-- ❌ 不做与简历无关的随机八股
-- ❌ 不做行为面试 / HR 面
+- This Skill does not edit resumes or activate claims.
+- A weak answer may trigger a recommendation to lower claim defensibility, but only `outcome-review` records that recommendation with evidence.
+- Preserve factual interviewer feedback separately from coaching inference.

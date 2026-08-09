@@ -35,3 +35,21 @@
 - **Status:** accepted
 - **Decision:** `resume-builder` supports conservative, balanced (default), and aggressive modes. All use the same profile and claim schemas; mode changes the proposal threshold, never the provenance requirement.
 - **Reason:** A candidate should be able to choose presentation strength without creating untraceable or incompatible downstream data.
+
+## ADR-007 — Resume Model is the publisher boundary
+
+- **Status:** accepted
+- **Decision:** `resume-tailor` creates a structured Resume Model; `resume-publisher` renders it and retains Markdown only as a compatibility input.
+- **Reason:** Layout code should not infer structure or introduce content drift from a fragile text format.
+
+## ADR-008 — Submitted artifacts are immutable
+
+- **Status:** accepted
+- **Decision:** An application references the exact JD snapshot and submitted DOCX. Later tailoring creates a new artifact rather than overwriting history.
+- **Reason:** Interview preparation must test what was actually submitted.
+
+## ADR-009 — Hard filters precede matching score
+
+- **Status:** accepted
+- **Decision:** Job blacklists and other non-negotiable preferences produce a hard failure before fit scoring.
+- **Reason:** A high soft-match score must not override a user’s explicit boundary.

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yu20120707/ai-career-toolkit/schemas/resume-model.schema.json",
+  "title": "Resume Model",
+  "description": "A reviewed, presentation-ready resume. It references approved claims but never creates them.",
+  "type": "object",
+  "required": ["schema_version", "id", "candidate_id", "basics", "sections", "claim_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "pattern": "^resume_[a-z0-9_]+$" },
+    "candidate_id": { "type": "string" },
+    "basics": { "type": "object", "required": ["name"], "additionalProperties": false, "properties": { "name": { "type": "string", "minLength": 1 }, "headline": { "type": "string" }, "contact": { "type": "array", "items": { "type": "string" }, "uniqueItems": true } } },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["title", "entries"],
+        "additionalProperties": false,
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["heading"],
+              "additionalProperties": false,
+              "properties": {
+                "heading": { "type": "string", "minLength": 1 },
+                "meta": { "type": "string" },
+                "bullets": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+                "body": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "claim_ids": { "type": "array", "items": { "type": "string", "pattern": "^claim_[a-z0-9_]+$" }, "uniqueItems": true },
+    "source": { "type": "object", "additionalProperties": false, "properties": { "master_resume": { "type": "string" }, "job_id": { "type": "string" }, "tailor_report": { "type": "string" } } }
+  }
+}

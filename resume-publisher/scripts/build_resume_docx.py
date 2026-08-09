@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import json
+import platform
 import re
 from pathlib import Path
 
@@ -25,13 +27,33 @@ MUTED = RGBColor(92, 99, 112)
 TEXT = RGBColor(26, 32, 44)
 LIGHT_RULE = "D8DEE8"
 SECTION_FILL = "EEF4FB"
-BODY_FONT = "Microsoft YaHei"
-SERIF_FONT = "SimSun"
+BODY_FONT = "Aptos"
+SERIF_FONT = "Times New Roman"
+
+
+def platform_cjk_font() -> str:
+    """Use a real font name on the platform that runs the renderer.
+
+    WordprocessingML accepts one font face per script, not a comma-separated
+    CSS-style list. The host application still provides its native fallback if
+    this face is absent after the document is moved elsewhere.
+    """
+    system = platform.system()
+    if system == "Darwin":
+        return "PingFang SC"
+    if system == "Windows":
+        return "Microsoft YaHei"
+    return "Noto Sans CJK SC"
+
+
+CJK_FONT = platform_cjk_font()
 
 
 def set_run_font(run, size=None, bold=None, color=None):
     run.font.name = BODY_FONT
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), BODY_FONT)
+    run._element.rPr.rFonts.set(qn("w:eastAsia"), CJK_FONT)
+    run._element.rPr.rFonts.set(qn("w:ascii"), BODY_FONT)
+    run._element.rPr.rFonts.set(qn("w:hAnsi"), BODY_FONT)
     if size is not None:
         run.font.size = Pt(size)
     if bold is not None:
@@ -80,7 +102,7 @@ def configure_document(doc: Document):
     styles = doc.styles
     normal = styles["Normal"]
     normal.font.name = BODY_FONT
-    normal._element.rPr.rFonts.set(qn("w:eastAsia"), BODY_FONT)
+    normal._element.rPr.rFonts.set(qn("w:eastAsia"), CJK_FONT)
     normal.font.size = Pt(10.5)
     normal.paragraph_format.space_after = Pt(4.5)
     normal.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
@@ -88,7 +110,7 @@ def configure_document(doc: Document):
     for style_name, size in [("Heading 1", 22), ("Heading 2", 12.5), ("Heading 3", 11)]:
         style = styles[style_name]
         style.font.name = BODY_FONT
-        style._element.rPr.rFonts.set(qn("w:eastAsia"), BODY_FONT)
+        style._element.rPr.rFonts.set(qn("w:eastAsia"), CJK_FONT)
         style.font.size = Pt(size)
         style.font.bold = True
         style.font.color.rgb = ACCENT_DARK if style_name != "Heading 1" else RGBColor(0, 0, 0)
@@ -351,9 +373,36 @@ def build_docx(markdown_path: Path, output_path: Path, photo_path: Path | None =
     doc.save(output_path)
 
 
+def build_docx_from_model(model_path: Path, output_path: Path, photo_path: Path | None = None):
+    """Render a stable Resume Model without guessing Markdown structure."""
+    model = json.loads(model_path.read_text(encoding="utf-8"))
+    basics = model["basics"]
+    doc = Document()
+    configure_document(doc)
+    contacts = list(basics.get("contact", []))
+    if basics.get("headline"):
+        contacts.insert(0, basics["headline"])
+    add_resume_header(doc, basics["name"], contacts, photo_path)
+    for section in model["sections"]:
+        add_heading(doc, 2, section["title"])
+        for entry in section["entries"]:
+            heading = entry["heading"]
+            if entry.get("meta"):
+                heading = f"{heading} | {entry['meta']}"
+            add_heading(doc, 3, heading)
+            for body in entry.get("body", []):
+                p = doc.add_paragraph()
+                p.paragraph_format.space_after = Pt(4)
+                add_inline_markdown(p, body, size=10.5)
+            for bullet in entry.get("bullets", []):
+                add_bullet(doc, bullet)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(output_path)
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("markdown", type=Path, help="Path to resume.md")
+    parser.add_argument("source", type=Path, help="Path to resume.md or structured resume-model.json")
     parser.add_argument("--outdir", type=Path, default=Path("dist"), help="Output directory")
     parser.add_argument("--basename", help="Output basename without extension")
     parser.add_argument("--photo", type=Path, help="Optional headshot path for resumes that should include a photo")
@@ -362,19 +411,28 @@ def parse_args():
 
 def main():
     args = parse_args()
-    markdown_path = args.markdown.resolve()
-    if not markdown_path.exists():
-        raise SystemExit(f"Markdown file not found: {markdown_path}")
+    source_path = args.source.resolve()
+    if not source_path.exists():
+        raise SystemExit(f"Resume source not found: {source_path}")
     photo_path = args.photo.resolve() if args.photo else None
     if photo_path and not photo_path.exists():
         raise SystemExit(f"Photo file not found: {photo_path}")
 
-    markdown = markdown_path.read_text(encoding="utf-8")
-    basename = args.basename or derive_basename(markdown, markdown_path.stem)
+    if source_path.suffix.lower() == ".json":
+        model = json.loads(source_path.read_text(encoding="utf-8"))
+        if "basics" not in model or "sections" not in model:
+            raise SystemExit("JSON source must be a Resume Model with basics and sections.")
+        basename = args.basename or re.sub(r'[\\/:*?"<>|\s]+', "-", model["basics"]["name"]).strip("-")
+    else:
+        markdown = source_path.read_text(encoding="utf-8")
+        basename = args.basename or derive_basename(markdown, source_path.stem)
     outdir = args.outdir.resolve()
     docx_path = outdir / f"{basename}.docx"
 
-    build_docx(markdown_path, docx_path, photo_path)
+    if source_path.suffix.lower() == ".json":
+        build_docx_from_model(source_path, docx_path, photo_path)
+    else:
+        build_docx(source_path, docx_path, photo_path)
     print(f"DOCX: {docx_path}")
 
 

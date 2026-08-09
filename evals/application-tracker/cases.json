@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0", "skill": "application-tracker", "cases": [
+    {"id": "duplicate-jd", "input": {"company": "Example", "title": "Backend Engineer", "url": "https://careers.example/jobs/1"}, "assertions": ["same canonical company, title, location, and URL reuses job ID", "does not create a duplicate application"]},
+    {"id": "submitted-version-lock", "input": {"status": "applied"}, "assertions": ["application references JD snapshot and submitted resume path", "later tailoring cannot overwrite submitted artifact", "status history preserves applied state"]}
+  ]
+}
