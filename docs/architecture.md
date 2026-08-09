@@ -13,6 +13,10 @@ flowchart TD
   T --> M[Resume model]
   M --> U[resume-publisher]
   T --> A[application-tracker]
+  P --> D[project-deep-dive]
+  C --> D
+  A --> D
+  D --> I
   A --> I[interview-griller]
   C --> I
   I --> O[outcome-review]
@@ -29,6 +33,7 @@ flowchart TD
 | Job record | `job-hunter` | tailor, tracker | Hard filters precede ranking. |
 | Resume model | `resume-tailor` | publisher, tracker, interview | Includes only active claim IDs. |
 | Submitted DOCX | `resume-publisher` | tracker, interview | Immutable after application. |
+| Project deep-dive note | `project-deep-dive` | interview-griller | Business evidence and user-confirmed reflection; never a new claim. |
 | Feedback / weak points | griller, outcome review | tailor, griller | Observed feedback stays separate from inference. |
 
 The implementation intentionally excludes UI, databases, and automated applications. A private workspace should be kept outside a public clone when it contains personal data.

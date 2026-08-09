@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Optional reference sources for application-aware and fundamentals interview drilling.",
+  "entries": [
+    {
+      "id": "real-interviews-01",
+      "path": "real-interviews/真实面经01.md",
+      "kind": "real_interview",
+      "priority": "high",
+      "topics": ["C++", "Linux", "networking", "kernel", "storage", "systems"],
+      "use_for": ["topic frequency", "company-style question samples", "follow-up prompts"],
+      "boundary": "Observed question collection; not a guarantee of current hiring requirements."
+    },
+    {
+      "id": "real-interviews-02",
+      "path": "real-interviews/真实面经02.md",
+      "kind": "real_interview",
+      "priority": "high",
+      "topics": ["C++", "backend", "Linux", "networking", "project introduction"],
+      "use_for": ["topic frequency", "company-style question samples", "follow-up prompts"],
+      "boundary": "Observed question collection; separate reported questions from coaching inference."
+    },
+    {
+      "id": "linux-full",
+      "path": "fundamentals/Linux系统面试题汇总，纯八股文~看完这篇就够了.md",
+      "kind": "fundamentals",
+      "priority": "medium",
+      "topics": ["Linux", "system calls", "memory", "interrupts", "synchronization", "kernel"],
+      "use_for": ["Linux fundamentals", "mechanism follow-ups"],
+      "boundary": "Study notes; verify version-sensitive kernel details when they matter."
+    },
+    {
+      "id": "mysql",
+      "path": "fundamentals/MySQL.md",
+      "kind": "fundamentals",
+      "priority": "medium",
+      "topics": ["MySQL", "indexes", "transactions", "MVCC", "locks", "SQL optimization"],
+      "use_for": ["database fundamentals", "trade-off follow-ups"],
+      "boundary": "Study notes; do not treat simplified answers as production guarantees."
+    },
+    {
+      "id": "operating-systems",
+      "path": "fundamentals/操作系统.md",
+      "kind": "fundamentals",
+      "priority": "medium",
+      "topics": ["processes", "threads", "scheduling", "memory", "IPC", "compilation"],
+      "use_for": ["operating-system fundamentals", "mechanism follow-ups"],
+      "boundary": "Study notes; connect textbook answers to the target role and project."
+    },
+    {
+      "id": "networking",
+      "path": "fundamentals/史上最全计算机网络面经.md",
+      "kind": "fundamentals",
+      "priority": "medium",
+      "topics": ["OSI", "HTTP", "DNS", "TCP", "TLS", "cookies", "sessions", "caching"],
+      "use_for": ["network fundamentals", "protocol sequence follow-ups"],
+      "boundary": "Study notes; avoid presenting historical protocol behavior as universal without context."
+    },
+    {
+      "id": "process-thread-coroutine",
+      "path": "fundamentals/线程进程协程.md",
+      "kind": "fundamentals",
+      "priority": "medium",
+      "topics": ["processes", "threads", "coroutines", "concurrency", "scheduling"],
+      "use_for": ["concurrency fundamentals", "model selection follow-ups"],
+      "boundary": "Study notes; preserve distinctions between implementation-specific coroutine models."
+    },
+    {
+      "id": "cpp-fundamentals",
+      "path": "fundamentals/C++ 面试高频考点精讲：史上最全八股文整理.md",
+      "kind": "fundamentals",
+      "priority": "high",
+      "topics": ["C++", "OOP", "virtual functions", "smart pointers", "memory", "STL", "concurrency"],
+      "use_for": ["C++ fundamentals", "mechanism and trade-off follow-ups"],
+      "boundary": "Study notes; prefer the user's claimed standard/version and actual code evidence."
+    },
+    {
+      "id": "linux-concise",
+      "path": "fundamentals/Linux 精简八股.md",
+      "kind": "fundamentals",
+      "priority": "high",
+      "topics": ["Linux", "processes", "threads", "memory", "IPC", "synchronization", "monitoring"],
+      "use_for": ["rapid Linux review", "short-form warm-up questions"],
+      "boundary": "Condensed notes; use the full Linux source when mechanism depth is required."
+    }
+  ]
+}

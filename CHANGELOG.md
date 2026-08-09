@@ -7,3 +7,5 @@
 - Added structured `Resume Model` and interview-feedback schemas; upgraded publisher to render Resume Model JSON with cross-platform font fallbacks while retaining Markdown input compatibility.
 - Added regression fixtures for tailor, interviewer, tracker, hunter, and the end-to-end workflow.
 - Documented the target architecture and local-file workflow.
+- Added `project-deep-dive` for evidence-backed business project narratives and connected its optional notes to application-aware interview practice.
+- Added a categorized `interview-griller` reference question bank for real interview samples and C++/Linux/OS/networking/MySQL/concurrency fundamentals.

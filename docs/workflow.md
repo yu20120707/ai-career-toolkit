@@ -4,8 +4,9 @@
 2. Run `job-hunter` with profile and preferences. Only `hard_filter: pass` records proceed to tailoring.
 3. Run `resume-tailor` with one JD. It creates a `tailored-resume.json`, Markdown version, and claim-selection report in `applications/<job-id>/`.
 4. Run `resume-publisher` from the JSON model, then use `application-tracker` to snapshot the JD and lock the submitted DOCX before changing status to `applied`.
-5. Run `interview-griller` against the actual application record. It uses selected claims, JD requirements, and prior feedback.
-6. Run `outcome-review` after each real or simulated round. It writes feedback and weak points that alter the next tailor/griller plan.
+5. Run `project-deep-dive` for the project behind the application when business ownership, root cause, or value needs clarification. It reads existing profile/claim/application evidence and asks one question at a time.
+6. Run `interview-griller` against the actual application record. It uses selected claims, JD requirements, optional deep-dive notes, and prior feedback.
+7. Run `outcome-review` after each real or simulated round. It writes feedback and weak points that alter the next tailor/griller plan.
 
 ## Workspace layout
 
@@ -20,6 +21,7 @@ workspace/
     tailored-resume.json
     tailored-resume.md
     submitted-resume.docx
+    deep-dive/YYYY-MM-DD-<topic>.md
     interview/round-1-feedback.json
     outcome.md
   weak-points.json

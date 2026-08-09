@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "skill": "project-deep-dive",
+  "cases": [
+    {
+      "id": "application-aware-business-story",
+      "input": {
+        "project_id": "project_backend",
+        "mode": "completed_retrospective",
+        "application_context": true
+      },
+      "assertions": [
+        "reads existing project and claim evidence before asking",
+        "confirms project and retrospective-or-demand mode",
+        "asks one question at a time through root cause, ownership, execution, value, and reflection",
+        "rejects vague value claims until metric, baseline, change, and measurement are named",
+        "writes an optional deep-dive note without activating or modifying claims",
+        "interview-griller can consume the note as context while preserving submitted-artifact and feedback boundaries"
+      ]
+    }
+  ]
+}

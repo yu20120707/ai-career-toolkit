@@ -9,7 +9,8 @@ flowchart LR
   B[Build profile + claims] --> J[Find jobs]
   J --> T[Tailor per JD]
   T --> P[Publish + track]
-  P --> I[Interview drill]
+  P --> D[Project deep-dive]
+  D --> I[Interview drill]
   I --> O[Review outcome]
 ```
 
@@ -17,7 +18,8 @@ flowchart LR
 2. `job-hunter` normalizes jobs and applies hard filters before ranking.
 3. `resume-tailor` creates `tailored-resume.json` + Markdown for one JD, selecting only active claims.
 4. `resume-publisher` renders the structured model to DOCX; `application-tracker` locks the submitted version.
-5. `interview-griller` tests the actual JD, submitted resume, claims, and prior feedback; `outcome-review` writes reusable weak points.
+5. `project-deep-dive` turns a project into an evidence-backed business story, optionally tied to an application.
+6. `interview-griller` tests the actual JD, submitted resume, claims, deep-dive note, and prior feedback; `outcome-review` writes reusable weak points.
 
 ## Skills
 
@@ -28,6 +30,7 @@ flowchart LR
 | `resume-tailor` | JD-specific Resume Model and claim-selection report |
 | `resume-publisher` | DOCX renderer for Resume Model (Markdown compatible) |
 | `application-tracker` | Immutable application artifacts and status lifecycle |
+| `project-deep-dive` | Business-value project deep dive and retrospective notes |
 | `interview-griller` | Submitted-resume-aware technical interview loops |
 | `outcome-review` | Feedback → weak points → next-session priorities |
 
@@ -35,7 +38,7 @@ flowchart LR
 
 ```bash
 git clone https://github.com/yu20120707/ai-career-toolkit.git
-cp -r ai-career-toolkit/{resume-builder,resume-tailor,resume-publisher,job-hunter,application-tracker,interview-griller,outcome-review} <your-agent-skills-dir>/
+cp -r ai-career-toolkit/{resume-builder,resume-tailor,resume-publisher,job-hunter,application-tracker,project-deep-dive,interview-griller,outcome-review} <your-agent-skills-dir>/
 ```
 
 Keep real candidate workspaces outside the cloned repository or in a private directory. JSON files must conform to the contracts under [`schemas/`](schemas/README.md).
